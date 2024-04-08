@@ -6,31 +6,34 @@ import DisplayProductsInBasket from "../components/DisplayProductInBasket";
 
 const Cart: FC = () => {
     const auth = useContext(AuthContext);
-    const [basket, setBasket] = useState<Basket>();
 
     useEffect(() => {
         async function fetchData() {
             if (auth.isAuthenticated && auth.user && auth.token) {
                 console.log(auth.user)
                 const BasketData: Basket = await getBasket(auth.user.id, auth.token);
-                setBasket(BasketData);
+                auth.setUserBasket(BasketData)
             }
         }
 
         fetchData();
-    }, [auth]);
+    }, [auth.isAuthenticated]);
+
+    window.addEventListener('beforeunload', function(event) {
+        localStorage.setItem("beforeunload", JSON.stringify( auth.ProductInBasket))
+    });
 
     return (
         <>
             {
                 auth.isAuthenticated ? (
                     <div className="d-flex justify-content-center">
-                        {basket?.products != null
+                        {auth.ProductInBasket != null && auth.ProductInBasket.length > 0
                             ? (
-                                <DisplayProductsInBasket productsArray={basket?.products}></DisplayProductsInBasket>
+                                <DisplayProductsInBasket productsArray={auth.ProductInBasket}></DisplayProductsInBasket>
                             )
                             : (
-                                <h1>Products is empty</h1>
+                                <h1>Cart is empty</h1>
                             )
                         }
                     </div>

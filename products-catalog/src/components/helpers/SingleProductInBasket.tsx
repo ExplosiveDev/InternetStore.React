@@ -1,7 +1,9 @@
-import { FC, useState } from "react";
+import { FC, useContext, useState } from "react";
 import { Link } from "react-router-dom";
+import { MouseEvent } from "react";
 import ProductInBasket from "../../Models/ProductInBasket";
 import "@fortawesome/fontawesome-free/css/all.css";
+import { AuthContext } from "../../context/AuthContext";
 
 interface SingleProductInBasketProps {
     product: ProductInBasket;
@@ -9,12 +11,19 @@ interface SingleProductInBasketProps {
 
 const SingleProductInBasket: FC<SingleProductInBasketProps> = ({ product }) => {
 
+    const auth = useContext(AuthContext);
     const formatter = new Intl.NumberFormat('default', {
         style: 'currency',
         currency: 'UAH',
     });
 
     const [isHovered, setIsHovered] = useState(false);
+
+    const ChangeCounteClick = async (e: MouseEvent<HTMLElement>) => {
+        e.preventDefault();
+        const name = (e.target as HTMLElement).getAttribute('name');
+        auth.changeCount(name!, product.id)
+    }
 
     return (
 
@@ -42,14 +51,14 @@ const SingleProductInBasket: FC<SingleProductInBasketProps> = ({ product }) => {
             </div>
             <div className="d-flex flex-column col-2">
                 <div className="d-flex border h-25">
-                    <button className="btn btn-success w-100"><span className="fas fa-caret-up"></span></button>
+                    <button className="btn btn-success w-100" name="CountPlus" onClick={ChangeCounteClick}><span className="fas fa-caret-up"></span></button>
                 </div>
                 <div className="d-flex border h-50">
                     <input type="number" className="form-control text-center fs-2" id="fromPriceInput"
                         min={1} value={product.count} readOnly />
                 </div>
                 <div className="d-flex border h-25">
-                    <button className="btn btn-success w-100"><span className="fas fa-caret-down"></span></button>
+                    <button className="btn btn-success w-100" name="CountMinus" onClick={ChangeCounteClick}><span className="fas fa-caret-down"></span></button>
                 </div>
             </div>
         </div>

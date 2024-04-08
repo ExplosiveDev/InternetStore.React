@@ -5,13 +5,17 @@ import { AuthContext } from "./context/AuthContext";
 //Hello world
 const App: FC = () => {
 
-    const { login, logout, token, user } = useAuth();
+    const {changeCount,setUserBasket,login, logout, token, user, basket, ProductInBasket } = useAuth();
     const isAuthenticated = !!token;
     return (
         <>
             <AuthContext.Provider value={{               
                 token:token || "",
                 user: user || null,
+                basket: basket || null,
+                ProductInBasket: ProductInBasket || [],
+                changeCount,
+                setUserBasket,
                 login,
                 logout,isAuthenticated
             }}>
