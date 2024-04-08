@@ -1,0 +1,14 @@
+.button{
+    border: none;
+    padding: 0px;
+}
+.img_for_single_photo{
+    max-width: 400px; 
+    max-height: 400px;
+}
+.show_products{
+    min-width:200px; 
+    max-width: 200px;
+    min-height:200px; 
+    max-height: 200px;
+}
