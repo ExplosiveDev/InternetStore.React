@@ -30,8 +30,12 @@ const ShowProduct: FC = () => {
     const InCardClick = async (e: MouseEvent<HTMLElement>) => {
         e.preventDefault();
 
-        if(auth.user?.id && auth.token && product)
-            await setInBasket(auth.user?.id, auth.token, product.id);
+        if(auth.user?.id && auth.token && product){
+            const prod = await setInBasket(auth.user?.id, auth.token, product.id);
+            if(prod.id != "00000000-0000-0000-0000-000000000000")
+                auth.addProductInCart(prod);
+        }
+
     }
 
     return (

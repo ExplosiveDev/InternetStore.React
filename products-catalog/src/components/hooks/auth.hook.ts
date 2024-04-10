@@ -20,11 +20,9 @@ export const useAuth = () =>{
     const [basket,setBasket] = useState<Basket | null>();
     const [ProductInBasket,setProducts] = useState<ProductInBasket[] | null>();
 
-
     const changeCount = useCallback( (operation:string, productId:string) => {
         const products = JSON.parse(localStorage.getItem(storageCartName)!) as ProductInBasket[];
         
-
         const productIndex = products.findIndex(product => product.id === productId);
         if (productIndex !== -1) {
 
@@ -43,7 +41,35 @@ export const useAuth = () =>{
         }
     }, [])
 
-    const setUserBasket = useCallback( (Basket:Basket) => {
+    const isLocalCartEmpty = useCallback((): boolean => {
+        const products = JSON.parse(localStorage.getItem(storageCartName)!) as ProductInBasket[];
+        if(products == null || products.length == 0){
+            return true;
+        }
+        return false;
+    }, []);
+
+    const addProductInCart = useCallback( (product:ProductInBasket) => {
+        if(isLocalCartEmpty()){
+            const products:ProductInBasket[] = [];
+            products.push(product)
+            localStorage.setItem(storageCartName, JSON.stringify(products));
+            console.log(products);
+        }
+        else{
+            const products = JSON.parse(localStorage.getItem(storageCartName)!) as ProductInBasket[];
+            products.push(product);
+            localStorage.setItem(storageCartName, JSON.stringify(products));
+        }
+        console.log(product);
+    },[])
+
+    const setUserBasketFromLocal = useCallback( () => {
+        const products = JSON.parse(localStorage.getItem(storageCartName)!) as ProductInBasket[];
+        setProducts(products);
+    },[])
+
+    const setUserBasketFromBase = useCallback( (Basket:Basket) => {
         setBasket(Basket);
         setProducts(Basket.products);
         localStorage.setItem(storageCartName, JSON.stringify( Basket.products))
@@ -62,6 +88,7 @@ export const useAuth = () =>{
         setToken("");
         setUser(initState);
         localStorage.removeItem(storageName);
+        localStorage.removeItem(storageCartName);
     }, [])
 
     useEffect( () => {
@@ -71,5 +98,5 @@ export const useAuth = () =>{
             login(data.token,data.user)
         }
     }, [login])
-    return {changeCount,setUserBasket,login, logout, token, user, basket, ProductInBasket};
+    return {isLocalCartEmpty,changeCount,addProductInCart,setUserBasketFromLocal,setUserBasketFromBase,login, logout, token, user, basket, ProductInBasket};
 }

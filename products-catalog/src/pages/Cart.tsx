@@ -10,18 +10,18 @@ const Cart: FC = () => {
     useEffect(() => {
         async function fetchData() {
             if (auth.isAuthenticated && auth.user && auth.token) {
-                console.log(auth.user)
-                const BasketData: Basket = await getBasket(auth.user.id, auth.token);
-                auth.setUserBasket(BasketData)
+
+                if(auth.isLocalCartEmpty()){
+                    const BasketData: Basket = await getBasket(auth.user.id, auth.token);
+                    auth.setUserBasketFromBase(BasketData);
+                }
+                else{
+                    auth.setUserBasketFromLocal();
+                }
             }
         }
-
         fetchData();
     }, [auth.isAuthenticated]);
-
-    window.addEventListener('beforeunload', function(event) {
-        localStorage.setItem("beforeunload", JSON.stringify( auth.ProductInBasket))
-    });
 
     return (
         <>

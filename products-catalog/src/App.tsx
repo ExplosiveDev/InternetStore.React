@@ -5,7 +5,7 @@ import { AuthContext } from "./context/AuthContext";
 //Hello world
 const App: FC = () => {
 
-    const {changeCount,setUserBasket,login, logout, token, user, basket, ProductInBasket } = useAuth();
+    const {isLocalCartEmpty,changeCount,addProductInCart,setUserBasketFromLocal,setUserBasketFromBase,login, logout, token, user, basket, ProductInBasket } = useAuth();
     const isAuthenticated = !!token;
     return (
         <>
@@ -14,10 +14,14 @@ const App: FC = () => {
                 user: user || null,
                 basket: basket || null,
                 ProductInBasket: ProductInBasket || [],
+                isLocalCartEmpty,
                 changeCount,
-                setUserBasket,
+                addProductInCart,
+                setUserBasketFromLocal,
+                setUserBasketFromBase,
                 login,
-                logout,isAuthenticated
+                logout,
+                isAuthenticated
             }}>
                 <MyRoutes isAuthenticated={isAuthenticated}></MyRoutes>
             </AuthContext.Provider>

@@ -21,8 +21,11 @@ interface AuthContextType {
     user: User | null; 
     basket:Basket | null,
     ProductInBasket:ProductInBasket[] | null,
+    isLocalCartEmpty:() => boolean;
     changeCount: (operation:string, productId:string) => void;
-    setUserBasket: (basket:Basket) => void;
+    addProductInCart: (product:ProductInBasket) => void;
+    setUserBasketFromLocal:() => void;
+    setUserBasketFromBase: (basket:Basket) => void;
     login: (jwtToken: string, user: User) => void;
     logout: () => void;
     isAuthenticated: boolean;
@@ -35,8 +38,11 @@ const defaultAuthContext: AuthContextType = {
     user: null,
     basket:null,
     ProductInBasket:null,
+    isLocalCartEmpty: () => true,
     changeCount: noop,
-    setUserBasket: noop,
+    addProductInCart: noop,
+    setUserBasketFromLocal: noop,
+    setUserBasketFromBase: noop,
     login: noop,
     logout: noop,
     isAuthenticated: false,
