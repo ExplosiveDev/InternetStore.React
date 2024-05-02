@@ -5,25 +5,26 @@ import { AuthContext } from "./context/AuthContext";
 //Hello world
 const App: FC = () => {
 
-    const {isLocalCartEmpty,changeCount,addProductInCart,setUserBasketFromLocal,setUserBasketFromBase,login, logout, token, user, basket, ProductInBasket } = useAuth();
+    const {clearCart,deleteProduct,isLocalCartEmpty,changeCount,addProductInCart,setUserBasketFromLocal,setUserBasketFromBase,login, logout, token, user, ProductInBasket } = useAuth();
     const isAuthenticated = !!token;
     return (
         <>
             <AuthContext.Provider value={{               
                 token:token || "",
                 user: user || null,
-                basket: basket || null,
                 ProductInBasket: ProductInBasket || [],
+                deleteProduct,
                 isLocalCartEmpty,
                 changeCount,
                 addProductInCart,
                 setUserBasketFromLocal,
                 setUserBasketFromBase,
+                clearCart,
                 login,
                 logout,
                 isAuthenticated
             }}>
-                <MyRoutes isAuthenticated={isAuthenticated}></MyRoutes>
+                <MyRoutes isAuthenticated={isAuthenticated} user={user!} ></MyRoutes>
             </AuthContext.Provider>
             
             

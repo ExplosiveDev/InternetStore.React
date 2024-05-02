@@ -3,6 +3,7 @@ interface User{
     userName:string,
     email:string,
     passwordHash:string,
+    roles: string[],
 }
 
 export default User;

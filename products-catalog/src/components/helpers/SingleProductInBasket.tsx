@@ -4,6 +4,7 @@ import { MouseEvent } from "react";
 import ProductInBasket from "../../Models/ProductInBasket";
 import "@fortawesome/fontawesome-free/css/all.css";
 import { AuthContext } from "../../context/AuthContext";
+import {deleteProductFromBasket} from "../../services/baskets"
 
 interface SingleProductInBasketProps {
     product: ProductInBasket;
@@ -24,6 +25,14 @@ const SingleProductInBasket: FC<SingleProductInBasketProps> = ({ product }) => {
         const name = (e.target as HTMLElement).getAttribute('name');
         auth.changeCount(name!, product.id)
     }
+    const deleteClick = async (e: MouseEvent<HTMLElement>) => {
+        e.preventDefault();
+
+        auth.deleteProduct(product.id);
+        if(auth.user?.id != null && auth.token != null){
+            await deleteProductFromBasket(auth.user.id,auth.token, product.id);
+        }
+    }
 
     return (
 
@@ -33,7 +42,7 @@ const SingleProductInBasket: FC<SingleProductInBasketProps> = ({ product }) => {
         >
             {/* Кнопка корзини для видалення */}
             <div className={`position-absolute top-0 start-0 ${isHovered ? 'show' : 'hide'} animated-button`}>
-                <button className="btn btn-danger"><span className="fas fa-trash"></span></button>
+                <button className="btn btn-danger" onClick={deleteClick}><span className="fas fa-trash"></span></button>
             </div>
 
             <div className="d-flex col-3 justify-content-center">

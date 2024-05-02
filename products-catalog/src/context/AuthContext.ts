@@ -18,31 +18,33 @@ import ProductInBasket from "../Models/ProductInBasket";
 
 interface AuthContextType {
     token: string | null;
-    user: User | null; 
-    basket:Basket | null,
-    ProductInBasket:ProductInBasket[] | null,
-    isLocalCartEmpty:() => boolean;
-    changeCount: (operation:string, productId:string) => void;
-    addProductInCart: (product:ProductInBasket) => void;
-    setUserBasketFromLocal:() => void;
-    setUserBasketFromBase: (basket:Basket) => void;
+    user: User | null;
+    ProductInBasket: ProductInBasket[] | null,
+    isLocalCartEmpty: () => boolean;
+    deleteProduct: (productId: string) => void;
+    changeCount: (operation: string, productId: string) => void;
+    addProductInCart: (product: ProductInBasket) => void;
+    setUserBasketFromLocal: () => void;
+    setUserBasketFromBase: (basket: Basket) => void;
+    clearCart: () => void;
     login: (jwtToken: string, user: User) => void;
     logout: () => void;
     isAuthenticated: boolean;
 }
 
-function noop() {}
+function noop() { }
 
 const defaultAuthContext: AuthContextType = {
     token: null,
     user: null,
-    basket:null,
-    ProductInBasket:null,
+    ProductInBasket: null,
     isLocalCartEmpty: () => true,
+    deleteProduct: noop,
     changeCount: noop,
     addProductInCart: noop,
     setUserBasketFromLocal: noop,
     setUserBasketFromBase: noop,
+    clearCart: noop,
     login: noop,
     logout: noop,
     isAuthenticated: false,

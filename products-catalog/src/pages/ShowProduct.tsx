@@ -34,6 +34,8 @@ const ShowProduct: FC = () => {
             const prod = await setInBasket(auth.user?.id, auth.token, product.id);
             if(prod.id != "00000000-0000-0000-0000-000000000000")
                 auth.addProductInCart(prod);
+
+            console.log(prod);
         }
 
     }

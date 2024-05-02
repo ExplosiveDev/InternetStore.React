@@ -1,4 +1,4 @@
-import { useCallback, useState, useEffect } from "react"
+import { useCallback, useState, useEffect, useId } from "react"
 import User from "../../Models/User";
 import Basket from "../../Models/Basket";
 import ProductInBasket from "../../Models/ProductInBasket";
@@ -6,23 +6,23 @@ import ProductInBasket from "../../Models/ProductInBasket";
 const storageName = 'userData';
 const storageCartName = 'userCart';
 
-const initState = {
-    id:'',
-    userName:'',
+const initState:User = {
+    id: '',
+    userName: '',
     email: '',
     passwordHash: '',
+    roles: [],
 };
 
-export const useAuth = () =>{
-    
-    const [token,setToken] = useState<string | null>();
-    const [user,setUser] = useState<User | null>();
-    const [basket,setBasket] = useState<Basket | null>();
-    const [ProductInBasket,setProducts] = useState<ProductInBasket[] | null>();
+export const useAuth = () => {
 
-    const changeCount = useCallback( (operation:string, productId:string) => {
+    const [token, setToken] = useState<string | null>();
+    const [user, setUser] = useState<User | null>();
+    const [ProductInBasket, setProducts] = useState<ProductInBasket[] | null>();
+
+    const changeCount = useCallback((operation: string, productId: string) => {
         const products = JSON.parse(localStorage.getItem(storageCartName)!) as ProductInBasket[];
-        
+
         const productIndex = products.findIndex(product => product.id === productId);
         if (productIndex !== -1) {
 
@@ -31,72 +31,101 @@ export const useAuth = () =>{
             } else if (operation === "CountMinus" && products[productIndex].count > 1) {
                 products[productIndex].count--;
             }
-            
+
             setProducts(products);
             localStorage.setItem(storageCartName, JSON.stringify(products));
-            
-            console.log(products);
+
         } else {
             console.log("Product not found in the basket.");
         }
     }, [])
 
-    const isLocalCartEmpty = useCallback((): boolean => {
+    const deleteProduct = useCallback((prodId: string) => {
         const products = JSON.parse(localStorage.getItem(storageCartName)!) as ProductInBasket[];
-        if(products == null || products.length == 0){
+        const index = products.findIndex((item) => item.id === prodId);
+        if (index !== -1) {
+            products.splice(index, 1);
+            setProducts(products);
+            localStorage.setItem(storageCartName, JSON.stringify(products));
+        }
+    }, [])
+
+    const isLocalCartEmpty = useCallback((): boolean => {
+        let products = [];
+        try {
+            const data = localStorage.getItem(storageCartName);
+
+            if (data) {
+                products = JSON.parse(data);
+            }
+
+        } catch (error) {
+            console.error('Помилка під час читання з localStorage:', error);
+        }
+
+        if (products == null || products.length == 0) {
             return true;
         }
         return false;
+
     }, []);
 
-    const addProductInCart = useCallback( (product:ProductInBasket) => {
-        if(isLocalCartEmpty()){
-            const products:ProductInBasket[] = [];
+    const addProductInCart = useCallback((product: ProductInBasket) => {
+        if (isLocalCartEmpty()) {
+            const products: ProductInBasket[] = [];
             products.push(product)
             localStorage.setItem(storageCartName, JSON.stringify(products));
-            console.log(products);
         }
-        else{
+        else {
             const products = JSON.parse(localStorage.getItem(storageCartName)!) as ProductInBasket[];
             products.push(product);
+            const data = localStorage.getItem(storageCartName);
+            if (data) {
+                localStorage.setItem(storageCartName, JSON.stringify([]))
+            }
             localStorage.setItem(storageCartName, JSON.stringify(products));
         }
-        console.log(product);
-    },[])
-
-    const setUserBasketFromLocal = useCallback( () => {
-        const products = JSON.parse(localStorage.getItem(storageCartName)!) as ProductInBasket[];
-        setProducts(products);
-    },[])
-
-    const setUserBasketFromBase = useCallback( (Basket:Basket) => {
-        setBasket(Basket);
-        setProducts(Basket.products);
-        localStorage.setItem(storageCartName, JSON.stringify( Basket.products))
     }, [])
 
-    const login = useCallback( (jwtToken:string, user:User) => {
+    const setUserBasketFromLocal = useCallback(() => {
+        const products = JSON.parse(localStorage.getItem(storageCartName)!) as ProductInBasket[];
+        setProducts(products);
+    }, [])
+
+    const setUserBasketFromBase = useCallback((Basket: Basket) => {
+        setProducts(Basket.products);
+        localStorage.setItem(storageCartName, JSON.stringify(Basket.products))
+    }, [])
+
+
+
+    const login = useCallback((jwtToken: string, user: User) => {
         setToken(jwtToken);
         setUser(user);
 
-        localStorage.setItem(storageName, JSON.stringify( {
-            user:user, token:jwtToken
+        localStorage.setItem(storageName, JSON.stringify({
+            user: user, token: jwtToken
         }))
     }, [])
-    
-    const logout = useCallback ( () => {
+
+    const clearCart = useCallback(() => {
+        setProducts([]);
+        localStorage.removeItem(storageCartName);
+    }, [])
+
+    const logout = useCallback(() => {
         setToken("");
         setUser(initState);
         localStorage.removeItem(storageName);
         localStorage.removeItem(storageCartName);
     }, [])
 
-    useEffect( () => {
+    useEffect(() => {
         const data = JSON.parse(localStorage.getItem(storageName)!);
 
-        if(data && data.token){
-            login(data.token,data.user)
+        if (data && data.token) {
+            login(data.token, data.user)
         }
     }, [login])
-    return {isLocalCartEmpty,changeCount,addProductInCart,setUserBasketFromLocal,setUserBasketFromBase,login, logout, token, user, basket, ProductInBasket};
+    return { clearCart, deleteProduct, isLocalCartEmpty, changeCount, addProductInCart, setUserBasketFromLocal, setUserBasketFromBase, login, logout, token, user, ProductInBasket };
 }

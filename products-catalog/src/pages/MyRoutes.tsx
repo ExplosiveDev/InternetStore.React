@@ -6,11 +6,13 @@ import ShowProduct from "./ShowProduct"
 import Login from "./Login"
 import Registration from "./Registration"
 import Navigation from "../components/Navigation"
+import User from "../Models/User"
 
 interface MyRoutesProps {
     isAuthenticated: Boolean;
+    user: User;
 }
-const MyRoutes: FC<MyRoutesProps> = ({ isAuthenticated }) => {
+const MyRoutes: FC<MyRoutesProps> = ({ isAuthenticated, user }) => {
     if (isAuthenticated) {
         return (
             <>
@@ -20,6 +22,7 @@ const MyRoutes: FC<MyRoutesProps> = ({ isAuthenticated }) => {
                         <Route path="/" element={<Shop />}></Route>
                         <Route path="/product/:id" element={<ShowProduct />}></Route>
                         <Route path="/cart" element={<Cart />}></Route>
+                        цфвфыв
                     </Routes>
                 </div>
             </>
