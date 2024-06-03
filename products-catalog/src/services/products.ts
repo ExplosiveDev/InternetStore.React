@@ -9,6 +9,7 @@ import Category from "../Models/Category";
 
 export const getAllProducts = async (): Promise<Product[]> => {
     const response = await axios.get<Product[]>('https://localhost:7250/Products');
+    console.log("update")
     return response.data;
 }
 
@@ -25,4 +26,12 @@ export const getProductById = async (id: string): Promise<Product> => {
 export const getAllCategories = async (): Promise<Category[]> => {
     const response = await axios.get<Category[]>(`https://localhost:7250/Categories`)
     return response.data;
+}
+
+export const deleteProduct = async (token: string, productInBasketId: string) =>{
+    const response = await axios.delete(`https://localhost:7250/Products/${productInBasketId}`, {
+        headers: {
+            Authorization: `Bearer ${token}`
+        }
+    });
 }

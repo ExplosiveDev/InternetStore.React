@@ -23,6 +23,7 @@ const Cart: FC = () => {
             }
         }
         fetchData();
+        console.log(auth.user)
     }, [auth.isAuthenticated]);
 
 

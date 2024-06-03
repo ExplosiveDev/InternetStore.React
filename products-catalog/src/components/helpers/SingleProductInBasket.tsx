@@ -28,7 +28,7 @@ const SingleProductInBasket: FC<SingleProductInBasketProps> = ({ product }) => {
     const deleteClick = async (e: MouseEvent<HTMLElement>) => {
         e.preventDefault();
 
-        auth.deleteProduct(product.id);
+        auth.deleteProductFromBasket(product.id);
         if(auth.user?.id != null && auth.token != null){
             await deleteProductFromBasket(auth.user.id,auth.token, product.id);
         }

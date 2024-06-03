@@ -1,4 +1,4 @@
-import { FC } from "react"
+import { FC, useEffect } from "react"
 import Shop from "./Shop"
 import { Route, Routes } from "react-router-dom"
 import Cart from "./Cart"
@@ -7,12 +7,15 @@ import Login from "./Login"
 import Registration from "./Registration"
 import Navigation from "../components/Navigation"
 import User from "../Models/User"
+import Profile from "./Profile"
+import BecomeSellerForm from "./BecomeSellerForm"
 
 interface MyRoutesProps {
     isAuthenticated: Boolean;
     user: User;
 }
 const MyRoutes: FC<MyRoutesProps> = ({ isAuthenticated, user }) => {
+
     if (isAuthenticated) {
         return (
             <>
@@ -22,7 +25,18 @@ const MyRoutes: FC<MyRoutesProps> = ({ isAuthenticated, user }) => {
                         <Route path="/" element={<Shop />}></Route>
                         <Route path="/product/:id" element={<ShowProduct />}></Route>
                         <Route path="/cart" element={<Cart />}></Route>
-                        цфвфыв
+                        <Route path="/profile" element={<Profile/>}></Route>
+                        <Route path="/saller" element={<BecomeSellerForm />}></Route>
+
+                        {/* {
+                            user.roles.indexOf("Admin") != -1 
+                            ?(
+                                
+                            )
+                            :(
+
+                            )
+                        } */}
                     </Routes>
                 </div>
             </>

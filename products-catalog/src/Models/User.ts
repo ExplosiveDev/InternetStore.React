@@ -1,3 +1,5 @@
+import Product from "./Product";
+
 interface User{
     id:string,
     userName:string,

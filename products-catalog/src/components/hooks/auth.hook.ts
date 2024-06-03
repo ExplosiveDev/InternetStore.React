@@ -3,6 +3,7 @@ import {secureLocalStorage} from "./secureLocalStorage.hook"
 import User from "../../Models/User";
 import Basket from "../../Models/Basket";
 import ProductInBasket from "../../Models/ProductInBasket";
+import { HubConnection, HubConnectionBuilder } from "@microsoft/signalr";
 
 
 const storageName = 'userData';
@@ -24,7 +25,6 @@ export const useAuth = () => {
 
     const changeCount = useCallback((operation: string, productId: string) => {
         const products = getDecryptedObject(storageCartName,secretKey) as ProductInBasket[];
-        // const products = JSON.parse(localStorage.getItem(storageCartName)!) as ProductInBasket[];
 
         const productIndex = products.findIndex(product => product.id === productId);
         if (productIndex !== -1) {
@@ -37,22 +37,19 @@ export const useAuth = () => {
 
             setProducts(products);
             saveEncryptedObject(storageCartName,products,secretKey);
-            // localStorage.setItem(storageCartName, JSON.stringify(products));
 
         } else {
             console.log("Product not found in the basket.");
         }
     }, [])
 
-    const deleteProduct = useCallback((prodId: string) => {
+    const deleteProductFromBasket = useCallback((prodId: string) => {
         const products = getDecryptedObject(storageCartName,secretKey) as ProductInBasket[];
-        // const products = JSON.parse(localStorage.getItem(storageCartName)!) as ProductInBasket[];
         const index = products.findIndex((item) => item.id === prodId);
         if (index !== -1) {
             products.splice(index, 1);
             setProducts(products);
             saveEncryptedObject(storageCartName,products,secretKey);
-            // localStorage.setItem(storageCartName, JSON.stringify(products));
         }
     }, [])
 
@@ -82,33 +79,26 @@ export const useAuth = () => {
             const products: ProductInBasket[] = [];
             products.push(product)
             saveEncryptedObject(storageCartName,products,secretKey);
-            // localStorage.setItem(storageCartName, JSON.stringify(products));
         }
         else {
             const products = getDecryptedObject(storageCartName,secretKey) as ProductInBasket[];
-            // const products = JSON.parse(localStorage.getItem(storageCartName)!) as ProductInBasket[];
             products.push(product);
             const data = getDecryptedObject(storageCartName,secretKey);
-            // const data = localStorage.getItem(storageCartName);
             if (data) {
                 saveEncryptedObject(storageCartName,[],secretKey);
-                // localStorage.setItem(storageCartName, JSON.stringify([]))
             }
             saveEncryptedObject(storageCartName,products,secretKey);
-            // localStorage.setItem(storageCartName, JSON.stringify(products));
         }
     }, [])
 
     const setUserBasketFromLocal = useCallback(() => {
         const products = getDecryptedObject(storageCartName,secretKey) as ProductInBasket[];
-        // const products = JSON.parse(localStorage.getItem(storageCartName)!) as ProductInBasket[];
         setProducts(products);
     }, [])
 
     const setUserBasketFromBase = useCallback((Basket: Basket) => {
         setProducts(Basket.products);
         saveEncryptedObject(storageCartName,Basket.products,secretKey);
-        // localStorage.setItem(storageCartName, JSON.stringify(Basket.products))
     }, [])
 
 
@@ -118,9 +108,6 @@ export const useAuth = () => {
         setUser(user);
 
         saveEncryptedObject(storageName,{user: user, token: jwtToken},secretKey);
-        // localStorage.setItem(storageName, JSON.stringify({
-        //     user: user, token: jwtToken
-        // }))
     }, [])
 
     const clearCart = useCallback(() => {
@@ -137,11 +124,12 @@ export const useAuth = () => {
 
     useEffect(() => {
         const data = getDecryptedObject(storageName,secretKey)
-        // const data = JSON.parse(localStorage.getItem(storageName)!);
-
+ 
         if (data && data.token) {
             login(data.token, data.user)
         }
     }, [login])
-    return { clearCart, deleteProduct, isLocalCartEmpty, changeCount, addProductInCart, setUserBasketFromLocal, setUserBasketFromBase, login, logout, token, user, ProductInBasket };
+
+
+    return { clearCart, deleteProductFromBasket, isLocalCartEmpty, changeCount, addProductInCart, setUserBasketFromLocal, setUserBasketFromBase, login, logout, token, user, ProductInBasket };
 }

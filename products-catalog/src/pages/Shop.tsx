@@ -29,6 +29,7 @@ const Shop: FC = () => {
         }
 
         fetchData();
+        
     }, []);
 
 

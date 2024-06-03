@@ -14,14 +14,20 @@ import { createContext } from "react";
 import User from "../Models/User";
 import Basket from "../Models/Basket";
 import ProductInBasket from "../Models/ProductInBasket";
+import { HubConnection } from "@microsoft/signalr";
+import Message from "../Models/Message";
 
 
 interface AuthContextType {
     token: string | null;
     user: User | null;
-    ProductInBasket: ProductInBasket[] | null,
+    ProductInBasket: ProductInBasket[] | null;
+    ProfileMessages: Message[] | null;
+    UnreadCount: number | null,
+    addMessage: (message: Message) => void;
+    clearUnreadCount : () => void,
     isLocalCartEmpty: () => boolean;
-    deleteProduct: (productId: string) => void;
+    deleteProductFromBasket: (productId: string) => void;
     changeCount: (operation: string, productId: string) => void;
     addProductInCart: (product: ProductInBasket) => void;
     setUserBasketFromLocal: () => void;
@@ -38,8 +44,12 @@ const defaultAuthContext: AuthContextType = {
     token: null,
     user: null,
     ProductInBasket: null,
+    ProfileMessages: null,
+    UnreadCount: null,
+    clearUnreadCount: noop,
+    addMessage: noop,
     isLocalCartEmpty: () => true,
-    deleteProduct: noop,
+    deleteProductFromBasket: noop,
     changeCount: noop,
     addProductInCart: noop,
     setUserBasketFromLocal: noop,

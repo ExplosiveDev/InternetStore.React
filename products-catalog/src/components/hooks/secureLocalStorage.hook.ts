@@ -18,13 +18,13 @@ export const secureLocalStorage = () => {
       function getDecryptedObject(key: string, password: string): any | null {
 
         const encrypted = localStorage.getItem(key);
-      
+
         if (encrypted) {
 
           const hashKey = CryptoJS.SHA256(password).toString();
       
-          const decrypted = CryptoJS.AES.decrypt(encrypted, hashKey).toString(CryptoJS.enc.Utf8);
-      
+          const decrypted = CryptoJS.AES.decrypt(encrypted, hashKey).toString(CryptoJS.enc.Utf8);          
+
           return JSON.parse(decrypted);
         }
       

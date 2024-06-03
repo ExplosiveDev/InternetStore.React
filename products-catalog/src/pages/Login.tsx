@@ -1,9 +1,10 @@
 import React, { ChangeEvent, FC, FormEvent, useContext, useEffect, useState } from "react";
-import { Link, useNavigate} from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import UserLoginRespons from "../Models/UserLoginRespons";
 import axios from "axios";
 import UserLoginReques from "../Models/UserLoginReques";
 import { AuthContext } from "../context/AuthContext";
+import { HubConnectionBuilder } from "@microsoft/signalr";
 
 const Login: FC = () => {
 
@@ -30,7 +31,7 @@ const Login: FC = () => {
         e.preventDefault();
         const response = await axios.post<UserLoginReques>('https://localhost:7250/Users/login', UserLogin);
         const data = response.data;
-        auth.login(data.token ,data.user);      
+        auth.login(data.token, data.user);
         setUserLogin(initState);
         navigate("/")
     }
